@@ -14,9 +14,16 @@ uint32_t file_open(std::string filename){
     if (fp != NULL){
         buffer = (unsigned char*)malloc(sizeof(char)*size);
 
-        fread(buffer, 1, size, fp);
-        uint32_t* p = reinterpret_cast<uint32_t*>(buffer);
-        num = htonl(*p);
+        int file_size = fread(buffer, 1, size, fp);
+        if (file_size == 4){
+            uint32_t* p = reinterpret_cast<uint32_t*>(buffer);
+            num = htonl(*p);
+        }
+        else{
+            printf("Please check file size: 4 byte only\n");
+
+            return NULL;
+        }
     }
     else{
         std::cout << "ERROR when opening the file named " << filename << std::endl;
@@ -44,6 +51,16 @@ int main(int argc, char *argv[]){
 
         uint32_t first_num = file_open(first_file);
         uint32_t second_num = file_open(second_file);
+
+        if ((first_num == NULL) || (second_num == NULL)){
+            if (first_num == NULL){
+                std::cout << "You need to check the file " << first_file << std::endl;
+            }
+            if (second_num == NULL){
+                std::cout << "You need to check the file " << second_file << std::endl;
+            }
+            return 0;
+        }
         uint32_t result = first_num + second_num;
 
         printf("%d(0x%x) + %d(0x%x) = %d(0x%x)\n", first_num, first_num,
@@ -51,6 +68,6 @@ int main(int argc, char *argv[]){
                                          result, result);
     }
     else{
-        printf("To execute this program, input 2 files like \'./add-nbo FILENAME_1 FILENAME_2\'");
+        printf("To execute this program, input 2 files like \'./add-nbo FILENAME_1 FILENAME_2\'\n");
     }
 }
