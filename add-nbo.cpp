@@ -50,4 +50,7 @@ int main(int argc, char *argv[]){
                                          second_num, second_num,
                                          result, result);
     }
+    else{
+        printf("To execute this program, input 2 files like \'./add-nbo FILENAME_1 FILENAME_2\'");
+    }
 }
